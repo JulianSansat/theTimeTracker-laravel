@@ -41,6 +41,15 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// Enables all CORS accesses
+if ($_SERVER && isset($_SERVER['HTTP_ORIGIN'])) {
+    $http_origin = $_SERVER['HTTP_ORIGIN'];
+    header("Access-Control-Allow-Origin: $http_origin");
+    header('Access-Control-Allow-Credentials: true');
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+}
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
