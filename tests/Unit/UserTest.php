@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 
 class UserTest extends TestCase
 {
@@ -10,6 +11,20 @@ class UserTest extends TestCase
     {
         parent::setUp();
 
+    }
+    public function testRegistration()
+    {
+        $userArray = factory(User::class)
+            ->states('with_plain_password')
+            ->make()
+            ->toArray();
+
+        $userArray['password'] = '123456';
+        $userArray['password_confirmation'] = '123456';
+
+        $response = $this->json('POST', 'api/auth/register', $userArray);
+
+        $response->assertStatus(201);
     }
 
     public function testlogIn()

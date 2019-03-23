@@ -6,6 +6,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Team;
+use App\Log;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -46,46 +48,30 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'password_confirmation', 'remember_token',
     ];
 
     protected $dates = [
         'deleted_at'
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
     const VALIDATION = [
-        "name"     => 'required|min:3|max:32',
-        "accesses" => 'present|nullable|json',
+        'first_name'     => 'required|min:3|max:32',
+        'last_name'      => 'required|min:3|max:32',
+        'email'         => 'required|string|email|max:64|unique:users',
+        'password'      => 'required|string|min:6|max:64|confirmed'
     ];
 
-    public function getUserAccessAttribute()
+    public function setPasswordAttribute($password)
     {
-        return $this->user['accesses'];
+        $this->attributes['password'] = bcrypt($password);
     }
 
     public function getAllAccessAttribute()
     {
         $profile_accesses = json_decode($this->usergroup->accesses, true) ?? [];
-        $user_accesses    = json_decode($this->accesses, true) ?? [];
-        
-        $all_accesses     = $profile_accesses;
-        foreach ($user_accesses as $key => $access) {
-            if (!array_key_exists($key, $profile_accesses)) {
-                $all_accesses[$key] = $access;
-                continue;
-            }
-            $all_accesses[$key] = array_merge($all_accesses[$key], $access);
-        }
-        return $all_accesses;
+
+        return $profile_accesses;
     }
 
     public function checkAccess($model, $action)
@@ -105,5 +91,15 @@ class User extends Authenticatable implements JWTSubject
     public function usergroup()
     {
         return $this->belongsTo(Usergroup::class);
+    }
+
+    public function teams()
+    {
+        return $this->belongsToMany(Team::class);
+    }
+
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
     }
 }

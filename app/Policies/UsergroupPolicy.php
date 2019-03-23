@@ -11,15 +11,15 @@ class UsergroupPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the post.
+     * Determine whether the user can view the Usergroup.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Usergroup  $usergroup
      * @return mixed
      */
 
     /**
-     * Determine whether the user can create posts.
+     * Determine whether the user can create Usergroups.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -29,10 +29,10 @@ class UsergroupPolicy
         return $user->checkAccess('usergroups', 'create');
     }
     /**
-     * Determine whether the user can update the post.
+     * Determine whether the user can update the Usergroup.
      *
      * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  \App\Usergroup  $usergroup
      * @return mixed
      */
     public function update(User $user, Usergroup $usergroup)

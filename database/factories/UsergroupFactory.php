@@ -40,14 +40,7 @@ $factory->state(App\Usergroup::class, 'admin', function (Faker $faker) {
                 "delete": "all",
                 "access": 1,
                 "manage": 1
-            },
-            "clients": {
-                "create": 1,
-                "update": "all",
-                "delete": "all",
-                "access": 1,
-                "manage": 1
-            },
+            }
         }',
     ];
 });

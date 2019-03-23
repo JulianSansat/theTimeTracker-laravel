@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Illuminate\Http\Request;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -14,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     /**
@@ -30,6 +33,22 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    public function register(Request $request, User $user)
+    {
+        $rules = $user::VALIDATION;
+
+        $data  = $request->validate($rules);
+
+        $data['usergroup_id'] = 2; //not admin for default
+
+        try {
+            $createdUser = $user->create($data);
+            return response($createdUser, 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
     }
 
     /**
