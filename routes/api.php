@@ -26,3 +26,20 @@ Route::group([
     Route::post('me', 'AuthController@me');
 
 });
+
+$resources = [
+    'usergroups',
+];
+
+Route::group([
+
+    'middleware' => 'api'
+
+], function ($router) use ($resources) {
+
+    Route::post('logout', 'AuthController@logout');
+
+    foreach ($resources as $resource) {
+        Route::resource($resource, ucfirst($resource) . 'Controller')->except(['create', 'edit']);
+    }
+});
