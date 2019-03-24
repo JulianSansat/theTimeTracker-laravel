@@ -80,6 +80,30 @@ class TeamsController extends Controller
         }
     }
 
+    public function addParticipants(Request $request, Team $teamModel, int $team)
+    {
+        $team = $teamModel->withTrashed()->find($team);
+
+        $dataUsers = $request->validate([
+            'users'   => 'required|array',
+            'users.*' => 'integer',
+        ]);
+
+        $dataUsers = collect($dataUsers['users'])->map(function ($item) {
+            return [
+                'user_id'  => $item
+            ];
+        });
+
+        try {
+            $team->users()->attach($dataUsers);
+
+            return response('participants added', 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
+    }
+
     public function update(Request $request, Team $team)
     {
         try {

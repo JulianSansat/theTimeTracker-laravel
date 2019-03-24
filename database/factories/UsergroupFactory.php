@@ -45,6 +45,22 @@ $factory->state(App\Usergroup::class, 'admin', function (Faker $faker) {
     ];
 });
 
+$factory->state(App\Usergroup::class, 'public', function (Faker $faker) {
+    return [
+            'accesses' => '{
+            "logs": {
+                "access": 1,
+            },
+            "teams": {
+                "create": 1,
+                "update": "own",
+                "delete": "own",
+                "access": 1,
+            }
+        }',
+    ];
+});
+
 $factory->state(App\Usergroup::class, 'without_permissions', function (Faker $faker) {
     return [
         'accesses' => null,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Log;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
 use App\Exceptions\UnauthorizedException;
@@ -22,9 +23,31 @@ class LogsController extends Controller
                 auth()->user()->checkAccess('logs', 'manage')
             );
         }
-        
+
+        $hasDateFilter = (
+            !empty($request->date)
+        );
+
+        $hasTeamFilter = (
+           !empty($request->team_id) 
+        );
+
+        $hasUserFilter = (
+           !empty($request->user_id) 
+        );
+
         $logs = $log::when($isManager, function ($query) use ($request) {
             $query->withTrashed();
+        })->when($hasDateFilter, function ($query) use ($request){
+            $query->whereDate('start', $request->date);
+        })->when($hasTeamFilter, function ($query) use ($request){
+            $query->whereHas('user', function ($query) use ($request){
+                $query->whereHas('teams', function ($query) use ($request){
+                    $query->where('team_id', '=', $request->team_id);    
+                });
+            });
+        })->when($hasUserFilter, function ($query) use ($request){
+            $query->where('user_id', '=', $request->user_id);
         });
 
         return $logs->paginate($this->getTotalPerPage());
