@@ -15,10 +15,9 @@ class CreateShiftsTable extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->unique();
             $table->dateTime('start');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

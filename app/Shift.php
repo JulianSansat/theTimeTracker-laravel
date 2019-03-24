@@ -8,17 +8,12 @@ use App\User;
 
 class Shift extends Model
 {
-    use SoftDeletes;
-
+    
     protected $guarded = [];
-
-    protected $dates = [
-        'deleted_at'
-    ];
 
     const VALIDATION = [
         'start'     => 'required|date_format:Y-m-d H:i:s',
-        'user_id'   => 'required|integer|min:1|digits_between:1,20',
+        'user_id'   => 'required|unique|integer|min:1|digits_between:1,20',
     ];
 
     public function user()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Shift;
+use App\Log;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -35,12 +36,15 @@ class AuthController extends Controller
 
         $user = auth()->user();
 
-        $shift = new Shift([
-            'start'   => date("Y-m-d H:i:s"),
-            'user_id' => $user->id,
-        ]);
+        if(!$user->shift()->count() > 0){
+            $shift = new Shift([
+                'start'   => date("Y-m-d H:i:s"),
+                'user_id' => $user->id,
+            ]);
 
-        $user->shift()->save($shift);
+            $user->shift()->save($shift);
+        }
+
 
         return $this->respondWithToken($token);
     }
@@ -78,6 +82,20 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        $user = auth()->user();
+
+        $shift = $user->shift()->first();
+
+        $log = new Log([
+            'start'   => $shift->start,
+            'finish'  => date("Y-m-d H:i:s"),
+            'user_id' => $user->id
+        ]);
+
+        $log->save();
+
+        $shift->delete();
+
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
