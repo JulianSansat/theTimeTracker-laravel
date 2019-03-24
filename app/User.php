@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Team;
 use App\Log;
+use App\Shift;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -101,5 +102,10 @@ class User extends Authenticatable implements JWTSubject
     public function logs()
     {
         return $this->hasMany(Log::class);
+    }
+
+    public function shift()
+    {
+        return $this->hasOne(Shift::class);
     }
 }

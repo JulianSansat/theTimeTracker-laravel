@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Shift;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -31,6 +32,15 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $user = auth()->user();
+
+        $shift = new Shift([
+            'start'   => date("Y-m-d H:i:s"),
+            'user_id' => $user->id,
+        ]);
+
+        $user->shift()->save($shift);
 
         return $this->respondWithToken($token);
     }
