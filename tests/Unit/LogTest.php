@@ -185,5 +185,4 @@ class LogTest extends TestCase
                 'Unauthorized'
             ]);
     }
-
 }
