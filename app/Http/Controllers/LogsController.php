@@ -36,6 +36,11 @@ class LogsController extends Controller
            !empty($request->user_id) 
         );
 
+        $hasDateIntervalFilter = false;
+        if (!empty($request->start_date) && !empty($request->end_date)) {
+            $hasDateIntervalFilter = true;
+        }
+
         $logs = $log::when($isManager, function ($query) use ($request) {
             $query->withTrashed();
         })->when($hasDateFilter, function ($query) use ($request){
@@ -43,11 +48,13 @@ class LogsController extends Controller
         })->when($hasTeamFilter, function ($query) use ($request){
             $query->whereHas('user', function ($query) use ($request){
                 $query->whereHas('teams', function ($query) use ($request){
-                    $query->where('team_id', '=', $request->team_id);    
+                    $query->where('team_id', '=', $request->team_id);
                 });
             });
         })->when($hasUserFilter, function ($query) use ($request){
             $query->where('user_id', '=', $request->user_id);
+        })->when($hasDateIntervalFilter, function ($query) use ($request){
+            $query->whereBetween('start', [$request->start_date, $request->end_date]);
         });
 
         return $logs->paginate($this->getTotalPerPage());

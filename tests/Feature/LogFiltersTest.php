@@ -68,6 +68,32 @@ class LogFiltersTest extends TestCase
             ]);
     }
 
+    public function testFilterByDateInterval(){
+        $specificDateLog = factory(Log::class)->create();
 
+        $createDate = new \DateTime($specificDateLog->start);
 
+        $startDate = $createDate->format('Y-m-d');
+
+        $nextDate = date('Y-m-d H:i:s',strtotime('+2 days',strtotime($specificDateLog->start)));
+
+        $nextDateFormatted = new \DateTime($nextDate);
+
+        $endDate = $nextDateFormatted->format('Y-m-d');
+
+        factory(Log::class, 2)->create([
+            'start' => $nextDate
+        ]);
+
+        factory(Log::class, 2)->create([
+            'start' => date('Y-m-d H:i:s',strtotime('+4 days',strtotime($nextDate)))
+        ]);
+
+        $response = $this->json('GET', 'api/logs?start_date='.$startDate.'&end_date='.$endDate.' 23:59:59' );
+
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                'total' => 3
+            ]);
+    }
 }
