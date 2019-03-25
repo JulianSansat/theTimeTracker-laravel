@@ -12,15 +12,18 @@
 1. Git clone.
 2. Enter into project folder.
 3. Install your project dependencies with composer install (required for everything).
-4. Configure your Environment file by copying (cp .env.example .env), generating your keys (APP_KEY, JWT_SECRET and APP_SETUP_KEY) and typing your database credentials.
+4. Configure your Environment file by copying (cp .env.example .env), generating your keys (APP_KEY, JWT_SECRET) and typing your database credentials.
 
-5. php artisan key:generate
-6. php artisan jwt:generate
+# Commands
+1. composer install
+2. php artisan key:generate
+3. php artisan jwt:generate
 
-7. Run your migrations php artisan migrate:fresh --seed .
-8. Run the project by opening php artisan serve or setting up your Apache VHost.
+4. php artisan migrate:fresh --seed
 
-9. Run test with: php vendor/bin/phpunit
+* Run the project by opening php artisan serve or setting up your Apache VHost.
+
+* You can run the tests with: php vendor/bin/phpunit
 
 ### This project is currently executing tests automatically with Travis-ci.
 
