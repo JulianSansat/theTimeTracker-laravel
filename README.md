@@ -17,7 +17,7 @@
 # Commands
 1. composer install
 2. php artisan key:generate
-3. php artisan jwt:generate
+3. php artisan jwt:secret
 
 4. php artisan migrate:fresh --seed
 
