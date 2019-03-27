@@ -55,7 +55,11 @@ class LogsController extends Controller
             $query->where('user_id', '=', $request->user_id);
         })->when($hasDateIntervalFilter, function ($query) use ($request){
             $query->whereBetween('start', [$request->start_date, $request->end_date]);
-        });
+        })->with([
+            'user' => function ($query) {
+                return $query->with('teams');
+            }
+        ]);
 
         return $logs->paginate($this->getTotalPerPage());
     }

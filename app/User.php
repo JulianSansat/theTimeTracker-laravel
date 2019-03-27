@@ -56,6 +56,10 @@ class User extends Authenticatable implements JWTSubject
         'deleted_at'
     ];
 
+    protected $with = [
+        'teams'
+    ];
+
     const VALIDATION = [
         'first_name'     => 'required|min:3|max:32',
         'last_name'      => 'required|min:3|max:32',
