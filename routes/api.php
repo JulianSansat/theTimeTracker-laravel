@@ -31,7 +31,8 @@ Route::group([
 $resources = [
     'usergroups',
     'teams',
-    'logs'
+    'logs',
+    'users'
 ];
 
 Route::group([

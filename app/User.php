@@ -63,8 +63,8 @@ class User extends Authenticatable implements JWTSubject
     const VALIDATION = [
         'first_name'     => 'required|min:3|max:32',
         'last_name'      => 'required|min:3|max:32',
-        'email'         => 'required|string|email|max:64|unique:users',
-        'password'      => 'required|string|min:6|max:64|confirmed'
+        'email'          => 'required|string|max:64|unique:users,email',
+        'password'       => 'required|string|min:6|max:64|confirmed'
     ];
 
     public function setPasswordAttribute($password)

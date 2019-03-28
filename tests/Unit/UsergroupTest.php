@@ -7,7 +7,6 @@ use App\Usergroup;
 
 class UserGroupTest extends TestCase
 {
-    protected $trashedGroup, $groupsWithTrashed, $groups;
 
     public function setUp()
     {
