@@ -48,6 +48,10 @@ $factory->state(App\Usergroup::class, 'admin', function (Faker $faker) {
 $factory->state(App\Usergroup::class, 'public', function (Faker $faker) {
     return [
             'accesses' => '{
+            "users": {
+                "update": "own",
+                "access": 1,
+            },
             "logs": {
                 "access": 1,
             },

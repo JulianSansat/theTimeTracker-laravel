@@ -26,12 +26,20 @@ class UsersController extends Controller
             auth()->user()->checkAccess('users', 'manage')
         );
 
-        if(!$isManager) {
-            return response()->json('Forbidden', 403);
-        }
+        $hasFirstNameFilter = (
+            !empty($request->first_name)
+        );
+        $hasLastNameFilter = (
+            !empty($request->last_name)
+        );
+
         
         $users = $user::when($isManager, function ($query) use ($request) {
             $query->withTrashed();
+        })->when($hasFirstNameFilter, function ($query) use ($request) {
+            $query->where('first_name', 'like', '%' . $request->first_name . '%');
+        })->when($hasLastNameFilter, function ($query) use ($request) {
+            $query->where('last_name', 'like', '%' . $request->last_name . '%');
         });
 
         return $users->paginate($this->getTotalPerPage());

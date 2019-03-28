@@ -38,10 +38,11 @@ class UserTest extends TestCase
 
         $response = $this->json('GET', 'api/users');
 
-        $response->assertStatus(403)
+        $response->assertStatus(200)
             ->assertJsonFragment([
-            'Forbidden'
-        ]);
+                'current_page'   => 1,
+                'total'          => $this->users
+            ]);
 
     }
 
