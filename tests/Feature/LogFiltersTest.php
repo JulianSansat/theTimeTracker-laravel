@@ -45,29 +45,6 @@ class LogFiltersTest extends TestCase
             ]);
     }
 
-    public function testFilterByDate(){
-        $specificDateLog = factory(Log::class)->create();
-
-        $createDate = new \DateTime($specificDateLog->start);
-
-        $dateToSearch = $createDate->format('Y-m-d');
-
-        factory(Log::class, 5)->create([
-            'start' => date('Y-m-d H:i:s',strtotime('+2 days',strtotime(date("Y-m-d H:i:s"))))
-        ]);
-
-        factory(Log::class, 2)->create([
-            'start' => date('Y-m-d H:i:s',strtotime('-2 days',strtotime(date("Y-m-d H:i:s"))))
-        ]);
-
-        $response = $this->json('GET', 'api/logs?date='.$dateToSearch );
-
-        $response->assertStatus(200)
-            ->assertJsonFragment([
-                'total' => 1
-            ]);
-    }
-
     public function testFilterByDateInterval(){
         $specificDateLog = factory(Log::class)->create();
 
