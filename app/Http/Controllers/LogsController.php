@@ -24,10 +24,6 @@ class LogsController extends Controller
             );
         }
 
-        $hasDateFilter = (
-            !empty($request->date)
-        );
-
         $hasTeamFilter = (
            !empty($request->team_id) 
         );
@@ -36,21 +32,37 @@ class LogsController extends Controller
            !empty($request->user_id) 
         );
 
-        $hasDateIntervalFilter = false;
-        if (!empty($request->start_date) && !empty($request->end_date)) {
-            $hasDateIntervalFilter = true;
-        }
+        $hasYearFilter = (
+            !empty($request->year)
+        );
+
+        $hasMonthFilter = (
+            !empty($request->month)
+        );
+
+        $hasDayFilter = (
+            !empty($request->day)
+        );
+
+        $hasDateIntervalFilter = (
+            !empty($request->start_date)
+            && !empty($request->end_date)
+        );
 
         $logs = $log::when($isManager, function ($query) use ($request) {
             $query->withTrashed();
-        })->when($hasDateFilter, function ($query) use ($request){
-            $query->whereDate('start', $request->date);
         })->when($hasTeamFilter, function ($query) use ($request){
             $query->whereHas('user', function ($query) use ($request){
                 $query->whereHas('teams', function ($query) use ($request){
                     $query->where('team_id', '=', $request->team_id);
                 });
             });
+        })->when($hasYearFilter, function ($query) use ($request){
+            $query->whereYear('start', $request->year);
+        })->when($hasMonthFilter, function ($query) use ($request){
+            $query->whereMonth('start', $request->month);
+        })->when($hasDayFilter, function ($query) use ($request){
+            $query->whereDay('start', $request->day);
         })->when($hasUserFilter, function ($query) use ($request){
             $query->where('user_id', '=', $request->user_id);
         })->when($hasDateIntervalFilter, function ($query) use ($request){
