@@ -22,9 +22,15 @@ class TeamsController extends Controller
                 auth()->user()->checkAccess('teams', 'manage')
             );
         }
+
+        $hasNameFilter = (
+            !empty($request->name)
+        );
         
         $teams = $team::when($isManager, function ($query) use ($request) {
             $query->withTrashed();
+        })->when($hasNameFilter, function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request->name . '%');
         });
 
         return $teams->paginate($this->getTotalPerPage());
